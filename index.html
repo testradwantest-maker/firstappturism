@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>RULA TRABZON - برامج سياحية</title>
+    <!-- إضافة مكتبات الحماية والتشفير -->
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- المكتبة القديمة للتصدير -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- إضافة jsPDF لإنشاء PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- إضافة خط Tajawal وأيقونات Font Awesome لتحسين التصميم -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+            padding: 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* تحسين الشعار */
+        .logo {
+            background: linear-gradient(135deg, #1e3c2c 0%, #2a5a3a 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+            transition: transform 0.2s;
+        }
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+        .logo h1 {
+            font-size: 52px;
+            color: #ffd700;
+            margin-left: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .logo h2 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+        .logo span {
+            font-size: 18px;
+            background: rgba(255,215,0,0.2);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        @media (max-width: 600px) {
+            .logo h1 {
+                font-size: 38px;
+            }
+            .logo h2 {
+                font-size: 18px;
+            }
+            .logo span {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* الشبكة المحسنة */
+        .grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(2px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,215,0,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #ffd700;
+        }
+
+        .box-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3c2c;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .box-title i {
+            color: #ffd700;
+            font-size: 22px;
+        }
+
+        /* أزرار محسنة */
+        button {
+            background: linear-gradient(135deg, #1e3c2c 0%, #2a5a3a 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button i {
+            font-size: 16px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30,60,44,0.3);
+            background: linear-gradient(135deg, #2a5a3a 0%, #1e3c2c 100%);
+        }
+        .btn-block {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        /* قوائم العناصر */
+        .list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 12px 0;
+            padding-left: 5px;
+        }
+        .list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .list::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        .list::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 10px;
+        }
+
+        .item {
+            background: #fafafc;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            border-right: 4px solid #ffd700;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .item:hover {
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateX(-2px);
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .item-name {
+            font-weight: 800;
+            color: #1e3c2c;
+            font-size: 17px;
+        }
+        .item-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .point {
+            background: #fff;
+            padding: 5px 12px;
+            border-radius: 25px;
+            font-size: 12px;
+            border: 1px solid #ffd700;
+            color: #1e3c2c;
+            font-weight: 500;
+        }
+
+        /* بيانات العميل */
+        .client-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .client-info input, .client-info select, .client-info textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e4e8;
+            border-radius: 15px;
+            width: 100%;
+            font-size: 15px;
+            background: white;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .client-info input:focus, .client-info select:focus, .client-info textarea:focus {
+            border-color: #ffd700;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+        }
+        .client-info textarea {
+            grid-column: span 2;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .checkbox-group {
+            grid-column: span 2;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            background: #f8f9fc;
+            padding: 12px 20px;
+            border-radius: 50px;
+            flex-wrap: wrap;
+            border: 1px solid #ffd700;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ffd700;
+        }
+
+        /* العناصر المختارة */
+        .selected-item {
+            background: #eef5ee;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-left: 3px solid #ffd700;
+            transition: 0.2s;
+        }
+        .selected-item:hover {
+            background: #e5f0e5;
+        }
+        .selected-item .trip-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .selected-item .trip-name {
+            font-weight: 800;
+            font-size: 16px;
+            color: #1e3c2c;
+        }
+        .selected-item .trip-type-small {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .day-badge {
+            background: #ffd700;
+            color: #1e3c2c;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* البرنامج النهائي */
+        .program {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            margin-top: 25px;
+            border: 1px solid rgba(255,215,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .program-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ffd700;
+        }
+        .program-header h2 {
+            font-size: 28px;
+            color: #1e3c2c;
+            font-weight: 800;
+        }
+        .program-content {
+            background: #fefcf5;
+            padding: 25px;
+            border-radius: 20px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .program-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #ffd700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1e3c2c;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .trip-day {
+            margin-bottom: 25px;
+            padding: 18px;
+            background: #fef8e7;
+            border-radius: 18px;
+            border-right: 5px solid #ffd700;
+            transition: 0.2s;
+        }
+        .trip-day:hover {
+            background: #fff7e0;
+        }
+        .trip-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .trip-day-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e3c2c;
+        }
+        .trip-day-type {
+            background: #ffd700;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1e3c2c;
+        }
+        .activity-item {
+            margin-bottom: 12px;
+            padding-right: 20px;
+        }
+        .activity-icon {
+            font-size: 18px;
+            margin-left: 10px;
+        }
+        .trip-points-list {
+            margin: 12px 0 5px 25px;
+            padding-right: 15px;
+        }
+        .trip-points-list li {
+            margin-bottom: 5px;
+        }
+        .summary-box {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            border-radius: 18px;
+            padding: 18px 22px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* أزرار التصدير */
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .export-btn {
+            flex: 1;
+            padding: 14px;
+            font-size: 16px;
+            min-width: 140px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        /* النوافذ المنبثقة */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 28px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid #ffd700;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #1e3c2c;
+            font-weight: 800;
+        }
+        .modal input, .modal textarea, .modal select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e4e8;
+            border-radius: 15px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .modal input:focus, .modal textarea:focus, .modal select:focus {
+            border-color: #ffd700;
+            outline: none;
+        }
+        .image-upload {
+            border: 2px dashed #ffd700;
+            padding: 20px;
+            text-align: center;
+            border-radius: 18px;
+            margin: 15px 0;
+            cursor: pointer;
+            background: #fff9e6;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .image-upload:hover {
+            background: #fff3d1;
+        }
+        .preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .preview img {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #ffd700;
+        }
+
+        /* الإشعارات */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            display: none;
+            z-index: 1001;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        @media (max-width: 1000px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .logo {
+                padding: 15px;
+            }
+            .box {
+                padding: 15px;
+            }
+            .client-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .client-info textarea {
+                grid-column: span 1;
+            }
+            .checkbox-group {
+                flex-direction: column;
+                align-items: flex-start;
+                border-radius: 20px;
+            }
+            .export-buttons {
+                flex-direction: column;
+            }
+            .program-content {
+                padding: 15px;
+            }
+        }
+
+        /* تحسين القوائم المنسدلة */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 16px;
+            padding-left: 45px;
+        }
+
+        .warning {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .activity-icon {
+            font-size: 18px;
+            margin-left: 10px;
+        }
+        .license-footer {
+            text-align: center;
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 15px;
+        }
+        i {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div style="display: flex; align-items: center;">
+                <h1>R</h1>
+                <div>
+                    <h2>RULA TRABZON</h2>
+                    <div style="color: #ffd700;">للرحلات السياحية</div>
+                </div>
+            </div>
+            <span><i class="fab fa-instagram"></i> @rula_trabzon_</span>
+        </div>
+
+        <div class="grid">
+            <!-- الفنادق -->
+            <div class="box">
+                <div class="box-title"><i class="fas fa-hotel"></i> الفنادق</div>
+                <button class="btn-block" onclick="showAddHotelStayForm()"><i class="fas fa-plus-circle"></i> إضافة إقامة فندقية</button>
+                <div class="list" id="hotelStaysList"></div>
+                <div class="box-title" style="margin-top:15px;"><i class="fas fa-building"></i> قائمة الفنادق</div>
+                <div class="list" id="hotelList"></div>
+                <button class="btn-block" onclick="showHotelForm()"><i class="fas fa-plus"></i> إضافة فندق جديد</button>
+            </div>
+
+            <!-- العميل -->
+            <div class="box">
+                <div class="box-title"><i class="fas fa-user"></i> بيانات العميل</div>
+                <div class="client-info">
+                    <input type="text" id="clientName" placeholder="اسم العميل" oninput="updateProgram()">
+                    <input type="date" id="arrivalDate" onchange="arrivalChanged()">
+                    <input type="number" id="stayDays" value="7" placeholder="عدد الأيام" onchange="stayDaysChanged()">
+                    <input type="date" id="departureDate" onblur="departureChanged()">
+                    <input type="number" id="adults" value="2" placeholder="البالغين" oninput="updateProgram()">
+                    <input type="number" id="children" value="0" placeholder="الأطفال" oninput="updateProgram()">
+                    <input type="number" id="totalPrice" placeholder="السعر الكامل للعرض ($)" style="grid-column: span 2;" oninput="updateProgram()">
+                    
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="includePickup" onchange="updateProgram(); saveToStorage();"> <i class="fas fa-plane-arrival"></i> استقبال من المطار</label>
+                        <label><input type="checkbox" id="includeDropoff" onchange="updateProgram(); saveToStorage();"> <i class="fas fa-plane-departure"></i> توديع إلى المطار</label>
+                    </div>
+                </div>
+                <div id="hotelWarning" class="warning" style="display:none;"></div>
+                <div id="tripWarning" class="warning" style="display:none;"></div>
+
+                <div class="box-title" style="margin-top:15px;"><i class="fas fa-check-circle"></i> الرحلات المختارة</div>
+                <div id="selectedList"></div>
+            </div>
+
+            <!-- الرحلات -->
+            <div class="box">
+                <div class="box-title"><i class="fas fa-map-marked-alt"></i> الرحلات</div>
+                <button class="btn-block" onclick="showTripForm()"><i class="fas fa-plus-circle"></i> إضافة رحلة</button>
+                <div class="list" id="tripList"></div>
+            </div>
+        </div>
+
+        <!-- أزرار المشاركة -->
+        <div class="export-buttons">
+            <button class="export-btn" onclick="copyText()" style="background:#ffd700; color:#1e3c2c;"><i class="fas fa-copy"></i> نسخ النص</button>
+            <button class="export-btn" onclick="shareToWhatsApp()" style="background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> مشاركة إلى واتساب (PDF)</button>
+        </div>
+
+        <!-- البرنامج النهائي -->
+        <div class="program" id="programBox">
+            <div class="program-header">
+                <h2>RULA TRABZON</h2>
+                <div style="color: #ffd700;">@rula_trabzon_</div>
+            </div>
+            <div class="program-content" id="programText"></div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة فندق جديد -->
+    <div class="modal" id="hotelForm">
+        <div class="modal-content">
+            <h3><i class="fas fa-plus-circle"></i> إضافة فندق جديد</h3>
+            <input type="text" id="hotelName" placeholder="اسم الفندق">
+            <select id="hotelStars">
+                <option value="5">⭐⭐⭐⭐⭐ 5 نجوم</option>
+                <option value="4">⭐⭐⭐⭐ 4 نجوم</option>
+                <option value="3">⭐⭐⭐ 3 نجوم</option>
+            </select>
+            <textarea id="hotelDesc" rows="2" placeholder="وصف الفندق"></textarea>
+            <div class="image-upload" onclick="document.getElementById('hotelImages').click()"><i class="fas fa-camera"></i> إضافة صور الفندق</div>
+            <input type="file" id="hotelImages" multiple accept="image/*" style="display:none;" onchange="previewHotel()">
+            <div class="preview" id="hotelPreview"></div>
+            <button onclick="saveHotel()" style="width:100%; margin-top:10px;"><i class="fas fa-save"></i> حفظ</button>
+            <button onclick="closeHotelForm()" style="width:100%; margin-top:5px; background:#dc3545;"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة إقامة فندقية -->
+    <div class="modal" id="addHotelStayForm">
+        <div class="modal-content">
+            <h3><i class="fas fa-plus-circle"></i> إضافة إقامة فندقية</h3>
+            <select id="stayHotelSelect" style="margin-bottom:12px;">
+                <option value="">اختر فندق</option>
+            </select>
+            <input type="number" id="stayNights" min="1" value="1" placeholder="عدد الليالي">
+            <button onclick="addHotelStay()" style="width:100%; margin-top:10px;"><i class="fas fa-plus"></i> إضافة</button>
+            <button onclick="closeAddHotelStayForm()" style="width:100%; margin-top:5px; background:#dc3545;"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة رحلة جديدة -->
+    <div class="modal" id="tripForm">
+        <div class="modal-content">
+            <h3><i class="fas fa-plus-circle"></i> إضافة رحلة</h3>
+            <input type="text" id="tripName" placeholder="اسم الرحلة">
+            <div id="pointsList"></div>
+            <button onclick="addPoint()" style="margin:5px 0;"><i class="fas fa-plus"></i> إضافة نقطة</button>
+            <div class="image-upload" onclick="document.getElementById('tripImages').click()"><i class="fas fa-camera"></i> إضافة صور الرحلة</div>
+            <input type="file" id="tripImages" multiple accept="image/*" style="display:none;" onchange="previewTrip()">
+            <div class="preview" id="tripPreview"></div>
+            <button onclick="saveTrip()" style="width:100%; margin-top:10px;"><i class="fas fa-save"></i> حفظ</button>
+            <button onclick="closeTripForm()" style="width:100%; margin-top:5px; background:#dc3545;"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============ نظام الترخيص عبر الإنترنت ============
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwtz8tbgwGYyMFF-qkZe8wLE-vgRSoRm9lzOZS5X72a_EeNpjd4MNTUo1zumNGc2_lz/exec';
+
+        async function _getDeviceFingerprint() {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            return result.visitorId;
+        }
+
+        async function _validateWithServer(key, fp) {
+            try {
+                const response = await fetch(API_URL + '?key=' + encodeURIComponent(key) + '&fp=' + encodeURIComponent(fp));
+                const data = await response.json();
+                return data;
+            } catch (e) {
+                console.error('❌ خطأ في الاتصال بالخادم:', e);
+                return { success: false, message: 'فشل الاتصال بالخادم. تحقق من اتصالك بالإنترنت.' };
+            }
+        }
+
+        async function _validateLicense() {
+            const stored = localStorage.getItem('rula_license');
+            const currentFingerprint = await _getDeviceFingerprint();
+
+            if (stored) {
+                const license = JSON.parse(stored);
+                const result = await _validateWithServer(license.masterKey, currentFingerprint);
+                if (result.success) {
+                    return true;
+                } else {
+                    localStorage.removeItem('rula_license');
+                    alert(result.message || 'الترخيص غير صالح. الرجاء إعادة إدخال كلمة المرور الصحيحة.');
+                    return await _firstTimeActivation();
+                }
+            } else {
+                return await _firstTimeActivation();
+            }
+        }
+
+        async function _firstTimeActivation() {
+            const masterKey = prompt('أدخل كلمة المرور:');
+            if (!masterKey) {
+                alert('❌ لا يمكن تشغيل البرنامج بدون كلمة مرور.');
+                return false;
+            }
+
+            const fingerprint = await _getDeviceFingerprint();
+            const result = await _validateWithServer(masterKey, fingerprint);
+
+            if (result.success) {
+                localStorage.setItem('rula_license', JSON.stringify({ masterKey, fingerprint }));
+                return true;
+            } else {
+                alert(result.message || 'فشل التفعيل. تحقق من المفتاح أو اتصالك بالإنترنت.');
+                return false;
+            }
+        }
+
+        async function _checkLicenseOrExit() {
+            const valid = await _validateLicense();
+            if (!valid) {
+                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:50px;">❌ فشل التحقق من الترخيص</h1><p style="text-align:center;"> +905316898444  الرجاء شراء البرنامج من المطور يمكننا التعديل لجعل البرنامج يناسبك اكثر .</p>';
+                throw new Error('Invalid license');
+            }
+            return true;
+        }
+
+        // ============ البيانات ============
+        let hotels = [];
+        let hotelStays = [];
+        let trips = [];
+        let selectedTrips = [];
+
+        // ============ حفظ وتحميل من localStorage ============
+        function saveToStorage() {
+            localStorage.setItem('rula_hotels', JSON.stringify(hotels));
+            localStorage.setItem('rula_hotelStays', JSON.stringify(hotelStays));
+            localStorage.setItem('rula_trips', JSON.stringify(trips));
+            localStorage.setItem('rula_selectedTrips', JSON.stringify(selectedTrips));
+            localStorage.setItem('rula_clientData', JSON.stringify({
+                clientName: document.getElementById('clientName').value,
+                arrivalDate: document.getElementById('arrivalDate').value,
+                stayDays: document.getElementById('stayDays').value,
+                departureDate: document.getElementById('departureDate').value,
+                adults: document.getElementById('adults').value,
+                children: document.getElementById('children').value,
+                totalPrice: document.getElementById('totalPrice').value,
+                includePickup: document.getElementById('includePickup').checked,
+                includeDropoff: document.getElementById('includeDropoff').checked
+            }));
+        }
+
+        function loadFromStorage() {
+            // الفنادق الافتراضية
+            const defaultHotels = [
+                { id: 1, name: "فندق زورلو جراند", stars: 5, desc: "فندق فاخر في وسط طرابزون - إطلالة على البحر", images: [] },
+                { id: 2, name: "فندق نوفوتيل", stars: 4, desc: "فندق عصري قريب من الميدان", images: [] },
+                { id: 3, name: "منتجع أيدر", stars: 5, desc: "منتجع طبيعي في مرتفعات أيدر", images: [] }
+            ];
+            // الرحلات الافتراضية
+            const defaultTrips = [
+                { id: 1, name: "جولة طرابزون", points: ["ميدان طرابزون", "قصر أتاتورك", "متحف آيا صوفيا", "مول الفورم"], images: [] },
+                { id: 2, name: "جولة أيدر", points: ["شلال اسكيت أوغلو", "الجسور العثمانية", "هضبة أيدر", "شلال فستان العروس"], images: [] },
+                { id: 3, name: "جولة أوزنجول", points: ["بحيرة أوزنجول", "معمل الشاي", "شلالات أوزنجول", "التراس الخشبي"], images: [] },
+                { id: 4, name: "رحلة همسي كوي", points: ["قرية همسي كوي", "مطعم السمك", "مرتفعات زيغانا"], images: [] }
+            ];
+
+            let savedHotels = localStorage.getItem('rula_hotels');
+            if (savedHotels) {
+                try {
+                    let parsed = JSON.parse(savedHotels);
+                    hotels = Array.isArray(parsed) && parsed.length > 0 ? parsed : defaultHotels;
+                } catch {
+                    hotels = defaultHotels;
+                }
+            } else {
+                hotels = defaultHotels;
+            }
+
+            let savedHotelStays = localStorage.getItem('rula_hotelStays');
+            if (savedHotelStays) {
+                try {
+                    hotelStays = JSON.parse(savedHotelStays);
+                } catch {
+                    hotelStays = [];
+                }
+            } else {
+                hotelStays = [];
+            }
+
+            let savedTrips = localStorage.getItem('rula_trips');
+            if (savedTrips) {
+                try {
+                    let parsed = JSON.parse(savedTrips);
+                    trips = Array.isArray(parsed) && parsed.length > 0 ? parsed : defaultTrips;
+                } catch {
+                    trips = defaultTrips;
+                }
+            } else {
+                trips = defaultTrips;
+            }
+
+            let savedSelected = localStorage.getItem('rula_selectedTrips');
+            if (savedSelected) {
+                try {
+                    selectedTrips = JSON.parse(savedSelected);
+                } catch {
+                    selectedTrips = [];
+                }
+            } else {
+                selectedTrips = [];
+            }
+
+            let savedClient = localStorage.getItem('rula_clientData');
+            if (savedClient) {
+                try {
+                    let client = JSON.parse(savedClient);
+                    document.getElementById('clientName').value = client.clientName || '';
+                    document.getElementById('arrivalDate').value = client.arrivalDate || '';
+                    document.getElementById('stayDays').value = client.stayDays || '7';
+                    document.getElementById('departureDate').value = client.departureDate || '';
+                    document.getElementById('adults').value = client.adults || '2';
+                    document.getElementById('children').value = client.children || '0';
+                    document.getElementById('totalPrice').value = client.totalPrice || '';
+                    document.getElementById('includePickup').checked = client.includePickup || false;
+                    document.getElementById('includeDropoff').checked = client.includeDropoff || false;
+                } catch (e) {
+                    console.warn('خطأ في تحميل بيانات العميل', e);
+                }
+            }
+        }
+
+        // ============ تهيئة الصفحة مع التحقق من الترخيص ============
+        window.onload = async function() {
+            try {
+                await _checkLicenseOrExit();
+
+                loadFromStorage();
+                showHotels();
+                showHotelStays();
+                showTrips();
+                showSelected();
+
+                if (!document.getElementById('arrivalDate').value) {
+                    let today = new Date().toISOString().split('T')[0];
+                    document.getElementById('arrivalDate').value = today;
+                }
+                syncDatesAndDays();
+                validateAll();
+                await updateProgram();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        // ============ دوال المزامنة والتحقق ============
+        function syncDatesAndDays() {
+            let arrival = document.getElementById('arrivalDate').value;
+            let stayDays = parseInt(document.getElementById('stayDays').value) || 0;
+            let departure = document.getElementById('departureDate').value;
+
+            if (arrival && stayDays > 0) {
+                let arrivalDate = new Date(arrival);
+                let calculatedDeparture = new Date(arrivalDate);
+                calculatedDeparture.setDate(arrivalDate.getDate() + stayDays);
+                let calcDepartStr = calculatedDeparture.toISOString().split('T')[0];
+                document.getElementById('departureDate').value = calcDepartStr;
+            } else if (arrival && departure) {
+                let arrivalDate = new Date(arrival);
+                let departureDate = new Date(departure);
+                let diffTime = departureDate - arrivalDate;
+                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 0) {
+                    document.getElementById('stayDays').value = diffDays;
+                }
+            }
+        }
+
+        async function arrivalChanged() {
+            syncDatesAndDays();
+            validateAll();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        async function stayDaysChanged() {
+            let stayDays = parseInt(document.getElementById('stayDays').value) || 0;
+            if (stayDays < 0) stayDays = 0;
+            document.getElementById('stayDays').value = stayDays;
+            syncDatesAndDays();
+            validateAll();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        async function departureChanged() {
+            let arrival = document.getElementById('arrivalDate').value;
+            let departure = document.getElementById('departureDate').value;
+            
+            if (arrival && departure) {
+                let arrivalDate = new Date(arrival);
+                let departureDate = new Date(departure);
+                
+                if (departureDate <= arrivalDate) {
+                    let correctedDeparture = new Date(arrivalDate);
+                    correctedDeparture.setDate(arrivalDate.getDate() + 1);
+                    document.getElementById('departureDate').value = correctedDeparture.toISOString().split('T')[0];
+                    departureDate = correctedDeparture;
+                    showToast('⚠️ تم تصحيح تاريخ المغادرة ليكون بعد تاريخ الوصول بيوم واحد');
+                }
+                
+                let diffTime = departureDate - arrivalDate;
+                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 0) {
+                    document.getElementById('stayDays').value = diffDays;
+                }
+            }
+            
+            validateAll();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        function validateAll() {
+            let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
+            let hotelNights = hotelStays.reduce((sum, s) => sum + s.nights, 0);
+            let hotelWarning = document.getElementById('hotelWarning');
+            if (hotelNights > totalDays) {
+                hotelWarning.style.display = 'block';
+                hotelWarning.innerText = `⚠️ مجموع ليالي الفنادق (${hotelNights}) أكبر من عدد أيام الإقامة (${totalDays})!`;
+            } else {
+                hotelWarning.style.display = 'none';
+            }
+
+            let invalidTrips = selectedTrips.filter(t => t.day > totalDays);
+            let tripWarning = document.getElementById('tripWarning');
+            if (invalidTrips.length > 0) {
+                selectedTrips = selectedTrips.filter(t => t.day <= totalDays);
+                showSelected();
+                tripWarning.style.display = 'block';
+                tripWarning.innerText = `⚠️ تمت إزالة ${invalidTrips.length} رحلة/رحلات لأن أيامها تجاوزت مدة الإقامة الجديدة.`;
+                setTimeout(() => tripWarning.style.display = 'none', 3000);
+            } else {
+                tripWarning.style.display = 'none';
+            }
+        }
+
+        // ============ دوال الفنادق ============
+        function showHotelForm() {
+            document.getElementById('hotelForm').style.display = 'flex';
+        }
+
+        function closeHotelForm() {
+            document.getElementById('hotelForm').style.display = 'none';
+            document.getElementById('hotelName').value = '';
+            document.getElementById('hotelStars').value = '5';
+            document.getElementById('hotelDesc').value = '';
+            document.getElementById('hotelPreview').innerHTML = '';
+        }
+
+        function previewHotel() {
+            let files = document.getElementById('hotelImages').files;
+            let preview = document.getElementById('hotelPreview');
+            preview.innerHTML = '';
+            for (let f of files) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(f);
+            }
+        }
+
+        function saveHotel() {
+            let name = document.getElementById('hotelName').value;
+            if (!name) { alert('اكتب اسم الفندق'); return; }
+            let images = [];
+            document.querySelectorAll('#hotelPreview img').forEach(img => images.push(img.src));
+            hotels.push({
+                id: Date.now(),
+                name: name,
+                stars: parseInt(document.getElementById('hotelStars').value),
+                desc: document.getElementById('hotelDesc').value,
+                images: images
+            });
+            showHotels();
+            closeHotelForm();
+            saveToStorage();
+            showToast('✅ تمت إضافة الفندق');
+        }
+
+        function deleteHotel(id) {
+            if (confirm('حذف الفندق؟')) {
+                hotels = hotels.filter(h => h.id != id);
+                hotelStays = hotelStays.filter(s => s.hotelId != id);
+                showHotels();
+                showHotelStays();
+                validateAll();
+                updateProgram();
+                saveToStorage();
+            }
+        }
+
+        function showHotels() {
+            let list = document.getElementById('hotelList');
+            list.innerHTML = '';
+            hotels.forEach(h => {
+                let stars = '⭐'.repeat(h.stars);
+                list.innerHTML += `
+                    <div class="item">
+                        <div class="item-header">
+                            <span class="item-name">${h.name}</span>
+                            <button onclick="deleteHotel(${h.id})" style="background:#dc3545;"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                        <div>${stars}</div>
+                        <div style="font-size:12px;">${h.desc || ''}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // ============ دوال الإقامات الفندقية ============
+        function showAddHotelStayForm() {
+            let select = document.getElementById('stayHotelSelect');
+            select.innerHTML = '<option value="">اختر فندق</option>';
+            hotels.forEach(h => {
+                select.innerHTML += `<option value="${h.id}">${h.name} (${'⭐'.repeat(h.stars)})</option>`;
+            });
+            document.getElementById('addHotelStayForm').style.display = 'flex';
+        }
+
+        function closeAddHotelStayForm() {
+            document.getElementById('addHotelStayForm').style.display = 'none';
+        }
+
+        async function addHotelStay() {
+            let hotelId = document.getElementById('stayHotelSelect').value;
+            let nights = parseInt(document.getElementById('stayNights').value);
+            if (!hotelId) { alert('اختر فندقاً'); return; }
+            if (nights < 1) { alert('عدد الليالي يجب أن يكون 1 على الأقل'); return; }
+
+            let hotel = hotels.find(h => h.id == hotelId);
+            if (!hotel) return;
+
+            hotelStays.push({
+                hotelId: hotel.id,
+                hotelName: hotel.name,
+                stars: hotel.stars,
+                desc: hotel.desc,
+                images: hotel.images,
+                nights: nights
+            });
+
+            showHotelStays();
+            closeAddHotelStayForm();
+            validateAll();
+            await updateProgram();
+            saveToStorage();
+            showToast('✅ تمت إضافة الإقامة');
+        }
+
+        function showHotelStays() {
+            let container = document.getElementById('hotelStaysList');
+            container.innerHTML = '';
+
+            if (hotelStays.length === 0) {
+                container.innerHTML = '<div style="color:#999;">لا توجد إقامات</div>';
+                return;
+            }
+
+            hotelStays.forEach((stay, index) => {
+                let stars = '⭐'.repeat(stay.stars);
+                container.innerHTML += `
+                    <div class="selected-item" style="flex-wrap: wrap;">
+                        <div style="flex:1;">
+                            <div><strong>${stay.hotelName}</strong> ${stars}</div>
+                            <div>عدد الليالي: ${stay.nights}</div>
+                            ${stay.desc ? `<div style="font-size:12px;">${stay.desc}</div>` : ''}
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button onclick="editHotelStayNights(${index})" style="background:#ffc107;"><i class="fas fa-edit"></i></button>
+                            <button onclick="removeHotelStay(${index})" style="background:#dc3545;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function removeHotelStay(index) {
+            hotelStays.splice(index, 1);
+            showHotelStays();
+            validateAll();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        async function editHotelStayNights(index) {
+            let newNights = prompt('عدد الليالي الجديد:', hotelStays[index].nights);
+            if (newNights !== null) {
+                newNights = parseInt(newNights);
+                if (newNights > 0) {
+                    hotelStays[index].nights = newNights;
+                    showHotelStays();
+                    validateAll();
+                    await updateProgram();
+                    saveToStorage();
+                } else {
+                    alert('الرجاء إدخال رقم صحيح أكبر من 0');
+                }
+            }
+        }
+
+        // ============ دوال الرحلات ============
+        function showTripForm() {
+            document.getElementById('pointsList').innerHTML = '';
+            addPoint(); addPoint(); addPoint();
+            document.getElementById('tripForm').style.display = 'flex';
+        }
+
+        function closeTripForm() {
+            document.getElementById('tripForm').style.display = 'none';
+            document.getElementById('tripName').value = '';
+            document.getElementById('tripPreview').innerHTML = '';
+        }
+
+        function previewTrip() {
+            let files = document.getElementById('tripImages').files;
+            let preview = document.getElementById('tripPreview');
+            preview.innerHTML = '';
+            for (let f of files) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(f);
+            }
+        }
+
+        function addPoint() {
+            let div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.gap = '5px';
+            div.style.marginBottom = '5px';
+            div.style.flexWrap = 'wrap';
+            div.innerHTML = `
+                <input type="text" placeholder="نقطة سياحية" style="flex:1; min-width: 150px; padding: 12px;">
+                <button onclick="this.parentElement.remove()" style="width:50px; background:#dc3545; padding: 12px;"><i class="fas fa-trash"></i></button>
+            `;
+            document.getElementById('pointsList').appendChild(div);
+        }
+
+        function saveTrip() {
+            let name = document.getElementById('tripName').value;
+            if (!name) { alert('اكتب اسم الرحلة'); return; }
+            let points = [];
+            document.querySelectorAll('#pointsList input').forEach(i => {
+                if (i.value) points.push(i.value);
+            });
+            if (points.length === 0) { alert('أضف نقطة واحدة على الأقل'); return; }
+            let images = [];
+            document.querySelectorAll('#tripPreview img').forEach(img => images.push(img.src));
+            trips.push({
+                id: Date.now(),
+                name: name,
+                points: points,
+                images: images
+            });
+            showTrips();
+            closeTripForm();
+            saveToStorage();
+            showToast('✅ تمت الإضافة');
+        }
+
+        async function selectTrip(id, selectedType) {
+            let trip = trips.find(t => t.id == id);
+            if (!trip) return;
+
+            let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
+            if (totalDays === 0) {
+                alert('الرجاء تحديد عدد أيام الإقامة أولاً');
+                return;
+            }
+
+            let day = prompt('في أي يوم تريد إدراج هذه الرحلة؟ (رقم اليوم من 1 إلى ' + totalDays + ')');
+            if (day === null) return;
+            day = parseInt(day);
+            if (isNaN(day) || day < 1 || day > totalDays) {
+                alert('الرجاء إدخال يوم صحيح ضمن مدة الرحلة');
+                return;
+            }
+
+            let exists = selectedTrips.some(t => t.day === day);
+            if (exists) {
+                alert('يوجد رحلة أخرى في هذا اليوم بالفعل. اختر يوماً آخر أو قم بتعديل اليوم الموجود.');
+                return;
+            }
+
+            let typeText = selectedType === 'private' ? '🚗 خاصة' : '👥 غروبات';
+            selectedTrips.push({ ...trip, type: typeText, day: day, uniqueId: Date.now() + Math.random() });
+            showSelected();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        async function removeTrip(index) {
+            selectedTrips.splice(index, 1);
+            showSelected();
+            await updateProgram();
+            saveToStorage();
+        }
+
+        async function editTripDay(index) {
+            let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
+            let newDay = prompt('تعديل اليوم الحالي (' + selectedTrips[index].day + ') إلى يوم جديد (1-' + totalDays + '):', selectedTrips[index].day);
+            if (newDay !== null) {
+                newDay = parseInt(newDay);
+                if (isNaN(newDay) || newDay < 1 || newDay > totalDays) {
+                    alert('الرجاء إدخال يوم صحيح');
+                    return;
+                }
+                let exists = selectedTrips.some((t, i) => i !== index && t.day === newDay);
+                if (exists) {
+                    alert('يوجد رحلة أخرى في هذا اليوم بالفعل. اختر يوماً آخر.');
+                    return;
+                }
+                selectedTrips[index].day = newDay;
+                showSelected();
+                await updateProgram();
+                saveToStorage();
+            }
+        }
+
+        function deleteTrip(id) {
+            if (confirm('حذف الرحلة؟')) {
+                trips = trips.filter(t => t.id != id);
+                selectedTrips = selectedTrips.filter(t => t.id != id);
+                showTrips();
+                showSelected();
+                updateProgram();
+                saveToStorage();
+            }
+        }
+
+        function showTrips() {
+            let list = document.getElementById('tripList');
+            list.innerHTML = '';
+            trips.forEach(t => {
+                list.innerHTML += `
+                    <div class="item">
+                        <div class="item-header">
+                            <span class="item-name">${t.name}</span>
+                            <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                                <select id="typeSelect_${t.id}" style="padding:8px; border:1px solid #ffd700; border-radius:5px; background:white; font-size:14px;">
+                                    <option value="private">🚗 خاصة</option>
+                                    <option value="group">👥 غروبات</option>
+                                </select>
+                                <button onclick="selectTrip(${t.id}, document.getElementById('typeSelect_${t.id}').value)" style="background:#28a745;"><i class="fas fa-plus"></i> إضافة</button>
+                                <button onclick="deleteTrip(${t.id})" style="background:#dc3545;"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <div class="item-points">
+                            ${t.points.slice(0,3).map(p => `<span class="point">${p}</span>`).join('')}
+                            ${t.points.length > 3 ? `<span class="point">+${t.points.length-3}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function showSelected() {
+            let list = document.getElementById('selectedList');
+            if (selectedTrips.length === 0) {
+                list.innerHTML = '<div style="color:#999;">لا توجد رحلات</div>';
+                return;
+            }
+            selectedTrips.sort((a, b) => a.day - b.day);
+            list.innerHTML = '';
+            selectedTrips.forEach((t, index) => {
+                list.innerHTML += `
+                    <div class="selected-item">
+                        <div class="trip-info">
+                            <span class="trip-name">${t.name} 
+                                <span class="day-badge">اليوم ${t.day}</span>
+                            </span>
+                            <span class="trip-type-small">${t.type}</span>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button onclick="editTripDay(${index})" style="background:#ffc107;"><i class="fas fa-edit"></i></button>
+                            <button onclick="removeTrip(${index})" style="background:#dc3545;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ============ توليد البرنامج ============
+        function generateOfferSummary() {
+            let includePickup = document.getElementById('includePickup').checked;
+            let includeDropoff = document.getElementById('includeDropoff').checked;
+            let price = document.getElementById('totalPrice').value;
+
+            let privateCount = selectedTrips.filter(t => t.type === '🚗 خاصة').length;
+            let groupCount = selectedTrips.filter(t => t.type === '👥 غروبات').length;
+            let totalTrips = selectedTrips.length;
+
+            let summaryParts = [];
+
+            if (hotelStays.length > 0) {
+                hotelStays.forEach((stay, i) => {
+                    summaryParts.push(`🏨 ${stay.hotelName} (${'⭐'.repeat(stay.stars)}) - ${stay.nights} ليالٍ`);
+                });
+            } else {
+                summaryParts.push('🏨 لا توجد إقامات فندقية');
+            }
+
+            if (totalTrips > 0) {
+                let tripsText = `🗺️ ${totalTrips} رحلات`;
+                if (privateCount > 0 && groupCount > 0) {
+                    tripsText += ` (🚗 ${privateCount} خاصة، 🚌 ${groupCount} غروبات)`;
+                } else if (privateCount > 0) {
+                    tripsText += ` (🚗 ${privateCount} خاصة)`;
+                } else if (groupCount > 0) {
+                    tripsText += ` (🚌 ${groupCount} غروبات)`;
+                }
+                summaryParts.push(tripsText);
+            }
+
+            if (includePickup) summaryParts.push('🛬 استقبال من المطار');
+            if (includeDropoff) summaryParts.push('🛫 توديع إلى المطار');
+            if (price) summaryParts.push(`💰 السعر الكامل للعرض: $${price}`);
+
+            return summaryParts;
+        }
+
+        async function updateProgram() {
+            const valid = await _validateLicense();
+            if (!valid) {
+                document.body.innerHTML = '<h1 style="color:red; text-align:center;">❌ فشل التحقق من الترخيص</h1>';
+                return;
+            }
+
+            let name = document.getElementById('clientName').value || 'العميل';
+            let start = document.getElementById('arrivalDate').value;
+            let end = document.getElementById('departureDate').value;
+            let adults = document.getElementById('adults').value;
+            let kids = document.getElementById('children').value;
+            let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
+            let includePickup = document.getElementById('includePickup').checked;
+            let includeDropoff = document.getElementById('includeDropoff').checked;
+
+            let html = '';
+
+            html += '<div class="program-section">';
+            html += '<div class="section-title">👤 معلومات العميل</div>';
+            html += `<p>📌 الاسم: ${name}</p>`;
+            if (start && end) {
+                let d1 = new Date(start).toLocaleDateString('ar-EG');
+                let d2 = new Date(end).toLocaleDateString('ar-EG');
+                html += `<p>📅 من: ${d1}  إلى: ${d2}</p>`;
+                html += `<p>⏱️ المدة: ${totalDays} ليالٍ</p>`;
+            }
+            html += `<p>👥 ${adults} بالغين ${kids > 0 ? '+ ' + kids + ' أطفال' : ''}</p>`;
+            html += '</div>';
+
+            if (hotelStays.length > 0) {
+                html += '<div class="program-section">';
+                html += '<div class="section-title">🏨 الإقامات الفندقية</div>';
+                let dayCounter = 1;
+                hotelStays.forEach((stay, idx) => {
+                    html += `<p><strong>${stay.hotelName}</strong> (${'⭐'.repeat(stay.stars)}) - ${stay.nights} ليالٍ (الأيام ${dayCounter} - ${dayCounter + stay.nights - 1})</p>`;
+                    if (stay.desc) html += `<p style="font-size:14px;">${stay.desc}</p>`;
+                    dayCounter += stay.nights;
+                });
+                html += '</div>';
+            } else {
+                html += '<div class="program-section"><div class="section-title">🏨 الإقامات الفندقية</div><p>لم يتم اختيار إقامات بعد</p></div>';
+            }
+
+            let activitiesByDay = {};
+
+            if (includePickup) {
+                if (!activitiesByDay[1]) activitiesByDay[1] = [];
+                activitiesByDay[1].push({
+                    type: 'pickup',
+                    icon: '🛬',
+                    name: 'استقبال من المطار والتوصيل إلى الفندق'
+                });
+            }
+
+            if (includeDropoff && totalDays > 0) {
+                let lastDay = totalDays;
+                if (!activitiesByDay[lastDay]) activitiesByDay[lastDay] = [];
+                activitiesByDay[lastDay].push({
+                    type: 'dropoff',
+                    icon: '🛫',
+                    name: 'توديع إلى المطار'
+                });
+            }
+
+            selectedTrips.forEach(trip => {
+                if (!activitiesByDay[trip.day]) activitiesByDay[trip.day] = [];
+                activitiesByDay[trip.day].push({
+                    type: 'trip',
+                    icon: '🗺️',
+                    name: trip.name,
+                    trip: trip
+                });
+            });
+
+            let sortedDays = Object.keys(activitiesByDay).map(Number).sort((a, b) => a - b);
+
+            if (sortedDays.length > 0) {
+                html += '<div class="program-section">';
+                html += '<div class="section-title">🗓️ جدول الرحلات</div>';
+                sortedDays.forEach(day => {
+                    html += '<div class="trip-day">';
+                    html += `<div class="trip-day-header"><span class="trip-day-title">اليوم ${day}</span></div>`;
+                    activitiesByDay[day].forEach(activity => {
+                        if (activity.type === 'trip') {
+                            html += `<div class="activity-item">`;
+                            html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
+                            html += '<ul class="trip-points-list">';
+                            activity.trip.points.forEach(p => html += `<li>• ${p}</li>`);
+                            html += '</ul>';
+                            if (activity.trip.images && activity.trip.images.length > 0) {
+                                html += `<img src="${activity.trip.images[0]}" style="width:120px; height:120px; object-fit:cover; border-radius:10px; border:3px solid #ffd700; margin-top:10px;">`;
+                            }
+                            html += '</div>';
+                        } else {
+                            html += `<div class="activity-item">`;
+                            html += `<span class="activity-icon">${activity.icon}</span> ${activity.name}`;
+                            html += '</div>';
+                        }
+                    });
+                    html += '</div>';
+                });
+                html += '</div>';
+            } else {
+                html += '<div class="program-section"><div class="section-title">🗓️ جدول الرحلات</div><p>لم يتم تحديد أي أنشطة بعد</p></div>';
+            }
+
+            let summaryParts = generateOfferSummary();
+            html += '<div class="summary-box"><strong>📋 ملخص العرض:</strong><br>';
+            summaryParts.forEach(part => html += part + '<br>');
+            html += '</div>';
+
+            html += '<div style="text-align:center; margin-top:20px;">للاستفسار: @rula_trabzon_</div>';
+            html += '<div class="license-footer">مرخص لجهاز واحد</div>';
+
+            document.getElementById('programText').innerHTML = html;
+        }
+
+        function copyText() {
+            let text = document.getElementById('programText').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ تم النسخ');
+            }).catch(() => {
+                let textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('✅ تم النسخ');
+            });
+        }
+
+        async function shareToWhatsApp() {
+            const { jsPDF } = window.jspdf;
+
+            const programElement = document.getElementById('programBox');
+
+            try {
+                const canvas = await html2canvas(programElement, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: programElement.clientWidth
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [canvas.width * 0.75, canvas.height * 0.75]
+                });
+
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width * 0.75, canvas.height * 0.75);
+
+                const pdfBlob = pdf.output('blob');
+                const pdfFile = new File([pdfBlob], 'program.pdf', { type: 'application/pdf' });
+
+                if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                    await navigator.share({
+                        title: 'برنامج رحلة من RULA TRABZON',
+                        text: 'تفضل برنامج الرحلة',
+                        files: [pdfFile]
+                    });
+                    showToast('✅ تمت المشاركة');
+                } else {
+                    const text = document.getElementById('programText').innerText;
+                    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                    window.open(url, '_blank');
+                    showToast('تم فتح واتساب (نص فقط)');
+                }
+            } catch (error) {
+                console.error('خطأ في إنشاء PDF:', error);
+                showToast('❌ فشل إنشاء PDF، استخدم نسخ النص بدلاً من ذلك');
+            }
+        }
+
+        function showToast(msg) {
+            let t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2000);
+        }
+    </script>
+</body>
+</html>
