@@ -388,6 +388,8 @@
             font-size: 12px;
             font-weight: bold;
             color: #1e3c2c;
+            display: inline-block;
+            white-space: nowrap;
         }
         .activity-item {
             margin-bottom: 12px;
@@ -1523,19 +1525,51 @@
             });
         }
 
+        // ============ الدالة المحسنة للمشاركة (PDF) ============
         async function shareToWhatsApp() {
             const { jsPDF } = window.jspdf;
-
             const programElement = document.getElementById('programBox');
 
             try {
+                showToast('⏳ جاري تحضير البرنامج للمشاركة...');
+
+                // انتظار قصير لاستقرار الصفحة
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // التقاط الصورة بدقة أعلى مع تحسين عرض النص
                 const canvas = await html2canvas(programElement, {
-                    scale: 2,
+                    scale: 3,
                     backgroundColor: '#ffffff',
-                    allowTaint: true,
-                    useCORS: true,
+                    allowTaint: false,
+                    useCORS: false,
                     logging: false,
-                    windowWidth: programElement.clientWidth
+                    windowWidth: programElement.scrollWidth,
+                    windowHeight: programElement.scrollHeight,
+                    letterRendering: true,
+                    onclone: (clonedDoc, element) => {
+                        // إضافة تنسيق إضافي للنسخة المستنسخة لضبط حجم خلفية "خاصة/غروبات"
+                        const style = clonedDoc.createElement('style');
+                        style.innerHTML = `
+                            * { font-family: 'Tajawal', Arial, sans-serif !important; }
+                            .activity-item strong { font-weight: 800 !important; }
+                            .trip-day-type {
+                                display: inline-block !important;
+                                max-width: 100px !important;
+                                white-space: nowrap !important;
+                                overflow: hidden !important;
+                                text-overflow: ellipsis !important;
+                                font-size: 12px !important;
+                                padding: 4px 10px !important;
+                                background-color: #ffd700 !important;
+                                border-radius: 30px !important;
+                                color: #1e3c2c !important;
+                            }
+                            .trip-day {
+                                overflow: auto !important;
+                            }
+                        `;
+                        clonedDoc.head.appendChild(style);
+                    }
                 });
 
                 const imgData = canvas.toDataURL('image/png');
