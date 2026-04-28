@@ -462,7 +462,7 @@
                 <div class="client-info">
                     <input type="text" id="clientName" placeholder="اسم العميل" oninput="updateProgram()">
                     <input type="date" id="arrivalDate" onchange="arrivalChanged()">
-                    <input type="number" id="stayDays" value="7" placeholder="عدد الأيام" onchange="stayDaysChanged()">
+                    <input type="number" id="stayDays" value="7" placeholder="عدد الليالي" onchange="stayDaysChanged()">
                     <input type="date" id="departureDate" onblur="departureChanged()">
                     <input type="number" id="adults" value="2" placeholder="البالغين" oninput="updateProgram()">
                     <input type="number" id="children" value="0" placeholder="الأطفال" oninput="updateProgram()">
@@ -506,18 +506,15 @@
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <h3><i class="fas fa-cogs"></i> إعدادات الوكالة</h3>
-            
             <label>شعار الوكالة (Logo):</label>
             <div class="image-upload" onclick="document.getElementById('settingLogoInput').click()">
                 <i class="fas fa-upload"></i> ارفع الشعار هنا (سيتم استخراج الألوان تلقائياً)
             </div>
             <input type="file" id="settingLogoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
-            
             <div style="text-align:center; margin-bottom:15px;">
                 <canvas id="colorCanvas" style="display:none;"></canvas>
                 <img id="settingLogoPreview" src="" style="max-height:100px; display:none; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
             </div>
-
             <div class="color-pickers">
                 <div>
                     <label>اللون الأساسي:</label>
@@ -529,16 +526,12 @@
                 </div>
             </div>
             <small style="display:block; text-align:center; color:#666; margin-bottom:15px;">(يتم اختيار الألوان تلقائياً عند رفع الشعار، ويمكنك تعديلها يدوياً)</small>
-
             <label>اسم الوكالة:</label>
             <input type="text" id="settingCompanyName" placeholder="مثال: RULA TRABZON">
-            
             <label>وصف فرعي:</label>
             <input type="text" id="settingSubTitle" placeholder="مثال: للرحلات السياحية">
-            
             <label>رقم الهاتف أو الانستغرام:</label>
             <input type="text" id="settingContact" placeholder="مثال: @rula_trabzon_">
-
             <button onclick="saveAgencySettings()" style="width:100%; margin-top:10px;"><i class="fas fa-save"></i> حفظ وتطبيق الهوية</button>
             <button onclick="closeSettingsModal()" class="btn-danger" style="width:100%; margin-top:5px;"><i class="fas fa-times"></i> إغلاق</button>
         </div>
@@ -577,7 +570,6 @@
             <label>المحطات السياحية للرحلة:</label>
             <div id="pointsList"></div>
             <button onclick="addPoint()" style="margin-bottom:15px; background:white; color:var(--primary); border:2px solid var(--primary);"><i class="fas fa-plus"></i> إضافة محطة أخرى</button>
-            
             <button onclick="saveTrip()" style="width:100%;"><i class="fas fa-save"></i> حفظ مسار الرحلة</button>
             <button onclick="closeTripForm()" class="btn-danger" style="width:100%; margin-top:5px;"><i class="fas fa-times"></i> إلغاء</button>
         </div>
@@ -991,22 +983,24 @@
 
         function validateAll() {
             let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
+            let maxTripDays = totalDays + 1; // يمكن إضافة رحلة في يوم المغادرة
+            
             let hotelNights = hotelStays.reduce((sum, s) => sum + s.nights, 0);
             let hotelWarning = document.getElementById('hotelWarning');
             if (hotelNights > totalDays) {
                 hotelWarning.style.display = 'block';
-                hotelWarning.innerText = `⚠️ مجموع ليالي الفنادق (${hotelNights}) أكبر من عدد أيام الإقامة (${totalDays})!`;
+                hotelWarning.innerText = `⚠️ مجموع ليالي الفنادق (${hotelNights}) أكبر من عدد الليالي المحددة (${totalDays})!`;
             } else {
                 hotelWarning.style.display = 'none';
             }
 
-            let invalidTrips = selectedTrips.filter(t => t.day > totalDays);
+            let invalidTrips = selectedTrips.filter(t => t.day > maxTripDays);
             let tripWarning = document.getElementById('tripWarning');
             if (invalidTrips.length > 0) {
-                selectedTrips = selectedTrips.filter(t => t.day <= totalDays);
+                selectedTrips = selectedTrips.filter(t => t.day <= maxTripDays);
                 showSelected();
                 tripWarning.style.display = 'block';
-                tripWarning.innerText = `⚠️ تمت إزالة ${invalidTrips.length} رحلة/رحلات لأن أيامها تجاوزت مدة الإقامة الجديدة.`;
+                tripWarning.innerText = `⚠️ تمت إزالة ${invalidTrips.length} رحلة/رحلات لأن أيامها تجاوزت مدة البرنامج الجديدة.`;
                 setTimeout(() => tripWarning.style.display = 'none', 3000);
             } else {
                 tripWarning.style.display = 'none';
@@ -1203,14 +1197,15 @@
 
             let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
             if (totalDays === 0) {
-                alert('الرجاء تحديد عدد أيام الإقامة أولاً');
+                alert('الرجاء تحديد عدد الليالي أولاً');
                 return;
             }
 
-            let day = prompt('في أي يوم تريد إدراج هذه الرحلة؟ (رقم اليوم من 1 إلى ' + totalDays + ')');
+            let maxTripDays = totalDays + 1;
+            let day = prompt('في أي يوم تريد إدراج هذه الرحلة؟ (رقم اليوم من 1 إلى ' + maxTripDays + ')');
             if (day === null) return;
             day = parseInt(day);
-            if (isNaN(day) || day < 1 || day > totalDays) {
+            if (isNaN(day) || day < 1 || day > maxTripDays) {
                 alert('الرجاء إدخال يوم صحيح ضمن مدة الرحلة');
                 return;
             }
@@ -1237,10 +1232,11 @@
 
         async function editTripDay(index) {
             let totalDays = parseInt(document.getElementById('stayDays').value) || 0;
-            let newDay = prompt('تعديل اليوم الحالي (' + selectedTrips[index].day + ') إلى يوم جديد (1-' + totalDays + '):', selectedTrips[index].day);
+            let maxTripDays = totalDays + 1;
+            let newDay = prompt('تعديل اليوم الحالي (' + selectedTrips[index].day + ') إلى يوم جديد (1-' + maxTripDays + '):', selectedTrips[index].day);
             if (newDay !== null) {
                 newDay = parseInt(newDay);
-                if (isNaN(newDay) || newDay < 1 || newDay > totalDays) {
+                if (isNaN(newDay) || newDay < 1 || newDay > maxTripDays) {
                     alert('الرجاء إدخال يوم صحيح');
                     return;
                 }
@@ -1416,7 +1412,7 @@
             }
 
             if (includeDropoff && totalDays > 0) {
-                let lastDay = totalDays;
+                let lastDay = totalDays + 1; // يمكن أن يكون التوديع في اليوم الذي يلي عدد الليالي
                 if (!activitiesByDay[lastDay]) activitiesByDay[lastDay] = [];
                 activitiesByDay[lastDay].push({
                     type: 'dropoff',
@@ -1498,7 +1494,7 @@
             });
         }
 
-        // ============ الدالة الأصلية للمشاركة (PDF) مع التلوين الديناميكي وتقليل الحجم ============
+        // ============ الدالة الأصلية للمشاركة (PDF) مع رفع الجودة وتقليل الحجم ============
         async function shareToWhatsApp() {
             const { jsPDF } = window.jspdf;
             const programElement = document.getElementById('programBox');
@@ -1508,9 +1504,9 @@
 
                 await new Promise(resolve => setTimeout(resolve, 300));
 
-                // Scale 1.2 لتقليل الحجم بشكل جذري مع الحفاظ على الدقة
+                // Scale 1.7 يوفر جودة ممتازة للقراءة دون الوصول لأحجام ضخمة
                 const canvas = await html2canvas(programElement, {
-                    scale: 1.2, 
+                    scale: 1.7, 
                     backgroundColor: '#ffffff',
                     allowTaint: false,
                     useCORS: false,
@@ -1543,12 +1539,12 @@
                     }
                 });
 
-                // ضغط الصورة إلى JPEG بجودة 65% مما يقلل حجم الملف جداً
-                const imgData = canvas.toDataURL('image/jpeg', 0.65); 
+                // ضغط الصورة إلى JPEG بجودة 80% للحفاظ على حدة النصوص بحجم ممتاز
+                const imgData = canvas.toDataURL('image/jpeg', 0.80); 
                 const pdf = new jsPDF({
                     orientation: 'portrait',
                     unit: 'px',
-                    format: [canvas.width, canvas.height] // الحجم متطابق مع الكانفاس لتجنب التشويش
+                    format: [canvas.width, canvas.height] 
                 });
 
                 pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
