@@ -1443,9 +1443,15 @@
                         if (activity.type === 'trip') {
                             html += `<div class="activity-item">`;
                             html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
-                            html += '<ul class="trip-points-list">';
-                            activity.trip.points.forEach(p => html += `<li>• ${p}</li>`);
+                            
+                            // 👇 التعديل لحل الالتفاف بشكل صحيح داخل الصندوق 👇
+                            html += '<ul class="trip-points-list" style="display: block; padding-right: 0; margin-right: 10px; list-style: none;">';
+                            activity.trip.points.forEach(p => {
+                                html += `<li style="display: inline-block; margin-left: 15px; margin-bottom: 8px; max-width: 100%; word-wrap: break-word; white-space: normal; line-height: 1.4;">• ${p}</li>`;
+                            });
                             html += '</ul>';
+                            // 👆 نهاية التعديل 👆
+
                             html += '</div>';
                         } else {
                             html += `<div class="activity-item">`;
@@ -1534,16 +1540,18 @@
                             .trip-day {
                                 overflow: visible !important;
                             }
+                            /* تعديل تنسيق الـ PDF الداخلي لنقاط الرحلة */
                             .trip-points-list {
-                                display: flex !important;
-                                flex-wrap: wrap !important;
-                                gap: 10px !important;
-                                list-style: none !important;
+                                display: block !important;
+                                padding-right: 0 !important;
                             }
                             .trip-points-list li {
-                                white-space: nowrap !important;
-                                word-break: keep-all !important;
                                 display: inline-block !important;
+                                margin-left: 15px !important;
+                                margin-bottom: 8px !important;
+                                max-width: 100% !important;
+                                white-space: normal !important;
+                                word-wrap: break-word !important;
                             }
                         `;
                         clonedDoc.head.appendChild(style);
