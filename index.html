@@ -1319,10 +1319,10 @@
                 hotelStays.forEach((stay, i) => {
                     let starStr = stay.stars > 0 ? ` (${'⭐'.repeat(stay.stars)})` : '';
                     
-                    let dIn = currentStayDate.toLocaleDateString('ar-EG');
+                    let dIn = currentStayDate.toLocaleDateString('en-GB');
                     let nextDate = new Date(currentStayDate);
                     nextDate.setDate(nextDate.getDate() + stay.nights);
-                    let dOut = nextDate.toLocaleDateString('ar-EG');
+                    let dOut = nextDate.toLocaleDateString('en-GB');
                     
                     summaryParts.push(`🏨 ${stay.hotelName}${starStr} - ${stay.nights} ليالٍ`);
                     summaryParts.push(`<span style="font-size: 0.85em; font-weight: normal; opacity: 0.9;">&nbsp;&nbsp;&nbsp; 📥 دخول: ${dIn} &nbsp;|&nbsp; 📤 خروج: ${dOut}</span>`);
@@ -1374,8 +1374,8 @@
             html += '<div class="section-title">👤 معلومات العميل</div>';
             html += `<p>📌 الاسم: ${name}</p>`;
             if (start && end) {
-                let d1 = new Date(start).toLocaleDateString('ar-EG');
-                let d2 = new Date(end).toLocaleDateString('ar-EG');
+                let d1 = new Date(start).toLocaleDateString('en-GB');
+                let d2 = new Date(end).toLocaleDateString('en-GB');
                 html += `<p>📅 من: ${d1}  إلى: ${d2}</p>`;
                 html += `<p>⏱️ المدة: ${totalDays} ليالٍ</p>`;
             }
@@ -1391,10 +1391,10 @@
                 hotelStays.forEach((stay, idx) => {
                     let starStr = stay.stars > 0 ? ` (${'⭐'.repeat(stay.stars)})` : '';
                     
-                    let dIn = currentHotelDate.toLocaleDateString('ar-EG');
+                    let dIn = currentHotelDate.toLocaleDateString('en-GB');
                     let nextDate = new Date(currentHotelDate);
                     nextDate.setDate(nextDate.getDate() + stay.nights);
-                    let dOut = nextDate.toLocaleDateString('ar-EG');
+                    let dOut = nextDate.toLocaleDateString('en-GB');
                     
                     html += `<div style="margin-bottom: 15px;">`;
                     html += `<p style="margin-bottom: 5px;"><strong>${stay.hotelName}</strong>${starStr} - ${stay.nights} ليالٍ (الأيام ${dayCounter} - ${dayCounter + stay.nights - 1})</p>`;
@@ -1519,7 +1519,7 @@
                     scale: 1.3, 
                     backgroundColor: '#ffffff',
                     allowTaint: false,
-                    useCORS: false,
+                    useCORS: true,
                     logging: false,
                     windowWidth: programElement.scrollWidth,
                     windowHeight: programElement.scrollHeight,
@@ -1544,36 +1544,50 @@
 
                 const pdfBlob = pdf.output('blob');
                 const filename = `${agencySettings.companyName.replace(/ /g, '_')}_Program.pdf`;
-                const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
-
+                
+                // الطريقة الأفضل لتنزيل الملف في الحالات الاحتياطية وتعمل على الكمبيوتر والهاتف
                 const downloadFallback = () => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(pdfBlob);
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    showToast('📥 تم تنزيل الـ PDF بجهازك (متصفحك لا يدعم المشاركة المباشرة)');
+                    try {
+                        pdf.save(filename);
+                        showToast('📥 جاري تنزيل الملف.. تحقق من التنزيلات (Downloads)');
+                    } catch (err) {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(pdfBlob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        showToast('📥 جاري التنزيل المباشر...');
+                    }
                 };
 
-                if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-                    try {
-                        await navigator.share({
-                            title: `برنامج رحلة من ${agencySettings.companyName}`,
-                            text: 'تفضل برنامج الرحلة',
-                            files: [pdfFile]
-                        });
-                        showToast('✅ تمت المشاركة');
-                    } catch (e) {
-                        console.warn('Share API failed, downloading instead...', e);
+                if (navigator.canShare) {
+                    const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+                    if (navigator.canShare({ files: [pdfFile] })) {
+                        try {
+                            await navigator.share({
+                                title: `برنامج رحلة من ${agencySettings.companyName}`,
+                                text: 'تفضل برنامج الرحلة',
+                                files: [pdfFile]
+                            });
+                            showToast('✅ تمت المشاركة');
+                        } catch (e) {
+                            if (e.name !== 'AbortError') {
+                                console.warn('Share API failed, falling back to download...', e);
+                                downloadFallback();
+                            }
+                        }
+                    } else {
                         downloadFallback();
                     }
                 } else {
                     downloadFallback();
                 }
+
             } catch (error) {
                 console.error('خطأ في إنشاء PDF:', error);
-                showToast('❌ فشل إنشاء PDF، يرجى المحاولة عبر متصفح Google Chrome');
+                alert('فشل إنشاء الملف. إذا كنت تفتح هذا الرابط من داخل "الواتساب" أو "فيسبوك"، يرجى فتحه في متصفح جوجل كروم (Google Chrome) لتتمكن من التنزيل بنجاح.');
+                showToast('❌ فشل إنشاء PDF');
             }
         }
     </script>
