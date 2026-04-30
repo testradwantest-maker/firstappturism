@@ -1532,18 +1532,7 @@
                                 color: var(--secondary-text) !important;
                             }
                             .trip-day {
-                                overflow: visible !important;
-                            }
-                            .trip-points-list {
-                                display: flex !important;
-                                flex-wrap: wrap !important;
-                                gap: 10px !important;
-                                list-style: none !important;
-                            }
-                            .trip-points-list li {
-                                white-space: nowrap !important;
-                                word-break: keep-all !important;
-                                display: inline-block !important;
+                                overflow: auto !important;
                             }
                         `;
                         clonedDoc.head.appendChild(style);
