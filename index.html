@@ -204,7 +204,7 @@
             background-color: #fff;
             border: 2px solid var(--secondary);
             border-radius: 8px;
-            padding: 8px 12px 8px 35px; /* مسافة للسهم في وضع RTL */
+            padding: 8px 12px 8px 35px;
             font-size: 14px;
             font-weight: 700;
             color: var(--primary);
@@ -374,7 +374,6 @@
         }
         .activity-item { margin-bottom: 12px; padding-right: 20px; font-weight: bold; color: #444; }
         .activity-icon { font-size: 20px; margin-left: 10px; color: var(--primary); }
-        .trip-points-list { margin: 12px 0 5px 35px; padding-right: 15px; color: #555; font-weight: normal; }
         
         .summary-box {
             background: var(--primary);
@@ -1444,12 +1443,12 @@
                             html += `<div class="activity-item">`;
                             html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
                             
-                            // 👇 التعديل لحل الالتفاف بشكل صحيح داخل الصندوق 👇
-                            html += '<ul class="trip-points-list" style="display: block; padding-right: 0; margin-right: 10px; list-style: none;">';
+                            // 👇 التعديل الجذري والنهائي باستخدام <div> و <span> ليتوافق تماماً مع PDF 👇
+                            html += '<div style="margin: 8px 35px 5px 0; color: #555; line-height: 1.8;">';
                             activity.trip.points.forEach(p => {
-                                html += `<li style="display: inline-block; margin-left: 15px; margin-bottom: 8px; max-width: 100%; word-wrap: break-word; white-space: normal; line-height: 1.4;">• ${p}</li>`;
+                                html += `<span style="display: inline-block; margin-left: 15px; margin-bottom: 5px; max-width: 100%; word-break: break-word;">• ${p}</span>`;
                             });
-                            html += '</ul>';
+                            html += '</div>';
                             // 👆 نهاية التعديل 👆
 
                             html += '</div>';
@@ -1539,19 +1538,6 @@
                             }
                             .trip-day {
                                 overflow: visible !important;
-                            }
-                            /* تعديل تنسيق الـ PDF الداخلي لنقاط الرحلة */
-                            .trip-points-list {
-                                display: block !important;
-                                padding-right: 0 !important;
-                            }
-                            .trip-points-list li {
-                                display: inline-block !important;
-                                margin-left: 15px !important;
-                                margin-bottom: 8px !important;
-                                max-width: 100% !important;
-                                white-space: normal !important;
-                                word-wrap: break-word !important;
                             }
                         `;
                         clonedDoc.head.appendChild(style);
