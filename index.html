@@ -1443,15 +1443,11 @@
                             html += `<div class="activity-item">`;
                             html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
                             
-                            // 👇 التعديل الجذري والنهائي باستخدام <div> و <span> ليتوافق تماماً مع PDF 👇
-                            html += '<div style="margin: 8px 35px 5px 0; color: #555; line-height: 1.8;">';
-                            activity.trip.points.forEach(p => {
-                                html += `<span style="display: inline-block; margin-left: 15px; margin-bottom: 5px; max-width: 100%; word-break: break-word;">• ${p}</span>`;
-                            });
+                            // 👇 تحويل نقاط الرحلة لنص عادي متصل بحجم أصغر 👇
+                            html += `<div style="margin: 8px 35px 5px 0; color: #555; font-size: 13.5px; line-height: 1.6;">`;
+                            html += activity.trip.points.join(' • ');
                             html += '</div>';
-                            // 👆 نهاية التعديل 👆
 
-                            html += '</div>';
                         } else {
                             html += `<div class="activity-item">`;
                             html += `<span class="activity-icon">${activity.icon}</span> ${activity.name}`;
