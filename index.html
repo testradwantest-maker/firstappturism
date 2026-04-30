@@ -524,6 +524,10 @@
                 <option value="5">⭐⭐⭐⭐⭐ 5 نجوم</option>
                 <option value="4">⭐⭐⭐⭐ 4 نجوم</option>
                 <option value="3">⭐⭐⭐ 3 نجوم</option>
+                <!-- 👇 الخيارات الجديدة المطلوبة 👇 -->
+                <option value="2">⭐⭐ 2 نجوم</option>
+                <option value="1">⭐ 1 نجمة</option>
+                <option value="0">بدون تصنيف (بلا نجوم)</option>
             </select>
             <textarea id="hotelDesc" rows="2" placeholder="وصف الفندق وميزاته"></textarea>
             <button onclick="saveHotel()" style="width:100%;"><i class="fas fa-save"></i> حفظ</button>
@@ -1028,7 +1032,7 @@
             let list = document.getElementById('hotelList');
             list.innerHTML = '';
             hotels.forEach(h => {
-                let stars = '⭐'.repeat(h.stars);
+                let stars = h.stars > 0 ? '⭐'.repeat(h.stars) : '<span style="color:#888;font-size:12px;">(بلا تصنيف)</span>';
                 list.innerHTML += `
                     <div class="item">
                         <div class="item-header">
@@ -1046,7 +1050,8 @@
             let select = document.getElementById('stayHotelSelect');
             select.innerHTML = '<option value="">اختر فندق</option>';
             hotels.forEach(h => {
-                select.innerHTML += `<option value="${h.id}">${h.name} (${'⭐'.repeat(h.stars)})</option>`;
+                let starStr = h.stars > 0 ? '⭐'.repeat(h.stars) : 'بلا نجوم';
+                select.innerHTML += `<option value="${h.id}">${h.name} (${starStr})</option>`;
             });
             document.getElementById('addHotelStayForm').style.display = 'flex';
         }
@@ -1090,7 +1095,7 @@
             }
 
             hotelStays.forEach((stay, index) => {
-                let stars = '⭐'.repeat(stay.stars);
+                let stars = stay.stars > 0 ? '⭐'.repeat(stay.stars) : '<span style="font-size:12px;color:#888;">(بلا تصنيف)</span>';
                 container.innerHTML += `
                     <div class="selected-item" style="flex-wrap: wrap;">
                         <div style="flex:1;">
@@ -1301,6 +1306,7 @@
             let includePickup = document.getElementById('includePickup').checked;
             let includeDropoff = document.getElementById('includeDropoff').checked;
             let price = document.getElementById('totalPrice').value;
+            let arrivalStr = document.getElementById('arrivalDate').value;
 
             let privateCount = selectedTrips.filter(t => t.type === '🚗 خاصة').length;
             let groupCount = selectedTrips.filter(t => t.type === '👥 غروبات').length;
@@ -1309,8 +1315,20 @@
             let summaryParts = [];
 
             if (hotelStays.length > 0) {
+                let currentStayDate = arrivalStr ? new Date(arrivalStr) : new Date();
+                
                 hotelStays.forEach((stay, i) => {
-                    summaryParts.push(`🏨 ${stay.hotelName} (${'⭐'.repeat(stay.stars)}) - ${stay.nights} ليالٍ`);
+                    let starStr = stay.stars > 0 ? ` (${'⭐'.repeat(stay.stars)})` : '';
+                    
+                    let dIn = currentStayDate.toLocaleDateString('ar-EG');
+                    let nextDate = new Date(currentStayDate);
+                    nextDate.setDate(nextDate.getDate() + stay.nights);
+                    let dOut = nextDate.toLocaleDateString('ar-EG');
+                    
+                    summaryParts.push(`🏨 ${stay.hotelName}${starStr} - ${stay.nights} ليالٍ`);
+                    summaryParts.push(`<span style="font-size: 0.85em; font-weight: normal; opacity: 0.9;">&nbsp;&nbsp;&nbsp; 📥 دخول: ${dIn} &nbsp;|&nbsp; 📤 خروج: ${dOut}</span>`);
+                    
+                    currentStayDate = nextDate;
                 });
             } else {
                 summaryParts.push('🏨 لا توجد إقامات فندقية');
@@ -1369,10 +1387,24 @@
                 html += '<div class="program-section">';
                 html += '<div class="section-title">🏨 الإقامات الفندقية</div>';
                 let dayCounter = 1;
+                let currentHotelDate = start ? new Date(start) : new Date();
+                
                 hotelStays.forEach((stay, idx) => {
-                    html += `<p><strong>${stay.hotelName}</strong> (${'⭐'.repeat(stay.stars)}) - ${stay.nights} ليالٍ (الأيام ${dayCounter} - ${dayCounter + stay.nights - 1})</p>`;
+                    let starStr = stay.stars > 0 ? ` (${'⭐'.repeat(stay.stars)})` : '';
+                    
+                    let dIn = currentHotelDate.toLocaleDateString('ar-EG');
+                    let nextDate = new Date(currentHotelDate);
+                    nextDate.setDate(nextDate.getDate() + stay.nights);
+                    let dOut = nextDate.toLocaleDateString('ar-EG');
+                    
+                    html += `<div style="margin-bottom: 15px;">`;
+                    html += `<p style="margin-bottom: 5px;"><strong>${stay.hotelName}</strong>${starStr} - ${stay.nights} ليالٍ (الأيام ${dayCounter} - ${dayCounter + stay.nights - 1})</p>`;
+                    html += `<p style="font-size:14px; color:#555; margin-bottom: 5px;">📥 دخول: ${dIn} &nbsp;&nbsp;|&nbsp;&nbsp; 📤 خروج: ${dOut}</p>`;
                     if (stay.desc) html += `<p style="font-size:14px;">${stay.desc}</p>`;
+                    html += `</div>`;
+                    
                     dayCounter += stay.nights;
+                    currentHotelDate = nextDate;
                 });
                 html += '</div>';
             } else {
@@ -1412,20 +1444,17 @@
 
             let sortedDays = Object.keys(activitiesByDay).map(Number).sort((a, b) => a - b);
 
-            // 👇 التعديل الجديد لجعل كل يوم منفصل وكل محطة في سطر 👇
             if (sortedDays.length > 0) {
                 html += '<div class="program-section">';
                 html += '<div class="section-title">🗓️ جدول الرحلات</div>';
                 
                 sortedDays.forEach(day => {
-                    // غلاف لكل يوم ليكون مفصولاً ومستقلاً
                     html += `<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #e0e4e8;">`;
                     
                     activitiesByDay[day].forEach(activity => {
                         if (activity.type === 'trip') {
                             html += `<p style="color: var(--primary); font-size: 16px; margin-bottom: 8px;"><strong>اليوم ${day}: ${activity.name}</strong> (${activity.trip.type})</p>`;
                             
-                            // طباعة المحطات كل واحدة في سطر باستخدام div لضمان عملها بشكل مثالي في PDF
                             html += `<div style="font-size:14px; color: #444; padding-right: 15px; border-right: 3px solid var(--secondary);">`;
                             activity.trip.points.forEach(p => {
                                 html += `<div style="margin-bottom: 4px;">▪ ${p}</div>`;
@@ -1444,9 +1473,7 @@
             } else {
                 html += '<div class="program-section"><div class="section-title">🗓️ جدول الرحلات</div><p>لم يتم تحديد أي أنشطة بعد</p></div>';
             }
-            // 👆 نهاية التعديل 👆
 
-            // استعادة الدالة الأصلية لملخص العرض
             let summaryParts = generateOfferSummary();
             html += '<div class="summary-box"><strong>📋 ملخص العرض:</strong><br>';
             summaryParts.forEach(part => html += part + '<br>');
@@ -1480,7 +1507,6 @@
             });
         }
 
-        // ============ الدالة الأصلية للمشاركة (PDF) مع رفع الجودة وتقليل الحجم ============
         async function shareToWhatsApp() {
             const { jsPDF } = window.jspdf;
             const programElement = document.getElementById('programBox');
@@ -1490,9 +1516,8 @@
 
                 await new Promise(resolve => setTimeout(resolve, 300));
 
-                // Scale 1.7 يوفر جودة ممتازة للقراءة دون الوصول لأحجام ضخمة
                 const canvas = await html2canvas(programElement, {
-                    scale: 1.7, 
+                    scale: 1.3, 
                     backgroundColor: '#ffffff',
                     allowTaint: false,
                     useCORS: false,
@@ -1509,7 +1534,6 @@
                     }
                 });
 
-                // ضغط الصورة إلى JPEG بجودة 80% للحفاظ على حدة النصوص بحجم ممتاز
                 const imgData = canvas.toDataURL('image/jpeg', 0.80); 
                 const pdf = new jsPDF({
                     orientation: 'portrait',
@@ -1523,22 +1547,34 @@
                 const filename = `${agencySettings.companyName.replace(/ /g, '_')}_Program.pdf`;
                 const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
 
+                const downloadFallback = () => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(pdfBlob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast('📥 تم تنزيل الـ PDF بجهازك (متصفحك لا يدعم المشاركة المباشرة)');
+                };
+
                 if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-                    await navigator.share({
-                        title: `برنامج رحلة من ${agencySettings.companyName}`,
-                        text: 'تفضل برنامج الرحلة',
-                        files: [pdfFile]
-                    });
-                    showToast('✅ تمت المشاركة');
+                    try {
+                        await navigator.share({
+                            title: `برنامج رحلة من ${agencySettings.companyName}`,
+                            text: 'تفضل برنامج الرحلة',
+                            files: [pdfFile]
+                        });
+                        showToast('✅ تمت المشاركة');
+                    } catch (e) {
+                        console.warn('Share API failed, downloading instead...', e);
+                        downloadFallback();
+                    }
                 } else {
-                    const text = document.getElementById('programText').innerText;
-                    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                    window.open(url, '_blank');
-                    showToast('تم فتح واتساب (نص فقط)');
+                    downloadFallback();
                 }
             } catch (error) {
                 console.error('خطأ في إنشاء PDF:', error);
-                showToast('❌ فشل إنشاء PDF، استخدم نسخ النص بدلاً من ذلك');
+                showToast('❌ فشل إنشاء PDF، يرجى المحاولة عبر متصفح Google Chrome');
             }
         }
     </script>
