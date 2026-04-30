@@ -204,7 +204,7 @@
             background-color: #fff;
             border: 2px solid var(--secondary);
             border-radius: 8px;
-            padding: 8px 12px 8px 35px; /* مسافة للسهم في وضع RTL */
+            padding: 8px 12px 8px 35px;
             font-size: 14px;
             font-weight: 700;
             color: var(--primary);
@@ -354,27 +354,6 @@
             align-items: center;
             gap: 10px;
         }
-        .trip-day {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: white;
-            border-radius: 18px;
-            border-right: 5px solid var(--primary);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
-        }
-        .trip-day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .trip-day-title { font-size: 19px; font-weight: 900; color: var(--primary); }
-        .trip-day-type {
-            background: var(--secondary);
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--secondary-text);
-        }
-        .activity-item { margin-bottom: 12px; padding-right: 20px; font-weight: bold; color: #444; }
-        .activity-icon { font-size: 20px; margin-left: 10px; color: var(--primary); }
-        .trip-points-list { margin: 12px 0 5px 35px; padding-right: 15px; color: #555; font-weight: normal; }
         
         .summary-box {
             background: var(--primary);
@@ -1433,32 +1412,28 @@
 
             let sortedDays = Object.keys(activitiesByDay).map(Number).sort((a, b) => a - b);
 
+            // 👇 التعديل الجديد لجعل الرحلات تطابق الإقامات الفندقية تماماً 👇
             if (sortedDays.length > 0) {
                 html += '<div class="program-section">';
                 html += '<div class="section-title">🗓️ جدول الرحلات</div>';
+                
                 sortedDays.forEach(day => {
-                    html += '<div class="trip-day">';
-                    html += `<div class="trip-day-header"><span class="trip-day-title">اليوم ${day}</span></div>`;
                     activitiesByDay[day].forEach(activity => {
                         if (activity.type === 'trip') {
-                            html += `<div class="activity-item">`;
-                            html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
-                            html += '<ul class="trip-points-list">';
-                            activity.trip.points.forEach(p => html += `<li>• ${p}</li>`);
-                            html += '</ul>';
-                            html += '</div>';
+                            html += `<p><strong>اليوم ${day}: ${activity.name}</strong> - ${activity.trip.type}</p>`;
+                            let pointsStr = activity.trip.points.join(' • ');
+                            html += `<p style="font-size:14px; margin-bottom: 12px; color: #555;">المحطات: ${pointsStr}</p>`;
                         } else {
-                            html += `<div class="activity-item">`;
-                            html += `<span class="activity-icon">${activity.icon}</span> ${activity.name}`;
-                            html += '</div>';
+                            html += `<p style="margin-bottom: 12px;"><strong>اليوم ${day}: ${activity.name}</strong> ${activity.icon}</p>`;
                         }
                     });
-                    html += '</div>';
                 });
+                
                 html += '</div>';
             } else {
                 html += '<div class="program-section"><div class="section-title">🗓️ جدول الرحلات</div><p>لم يتم تحديد أي أنشطة بعد</p></div>';
             }
+            // 👆 نهاية التعديل 👆
 
             // استعادة الدالة الأصلية لملخص العرض
             let summaryParts = generateOfferSummary();
@@ -1518,22 +1493,6 @@
                         const style = clonedDoc.createElement('style');
                         style.innerHTML = `
                             * { font-family: 'Tajawal', Arial, sans-serif !important; }
-                            .activity-item strong { font-weight: 800 !important; }
-                            .trip-day-type {
-                                display: inline-block !important;
-                                max-width: 100px !important;
-                                white-space: nowrap !important;
-                                overflow: hidden !important;
-                                text-overflow: ellipsis !important;
-                                font-size: 12px !important;
-                                padding: 4px 10px !important;
-                                background-color: var(--secondary) !important;
-                                border-radius: 30px !important;
-                                color: var(--secondary-text) !important;
-                            }
-                            .trip-day {
-                                overflow: auto !important;
-                            }
                         `;
                         clonedDoc.head.appendChild(style);
                     }
