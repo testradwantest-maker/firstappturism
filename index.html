@@ -1443,9 +1443,16 @@
                         if (activity.type === 'trip') {
                             html += `<div class="activity-item">`;
                             html += `<span class="activity-icon">${activity.icon}</span> <strong>${activity.name}</strong> <span class="trip-day-type">${activity.trip.type}</span>`;
-                            html += '<ul class="trip-points-list">';
-                            activity.trip.points.forEach(p => html += `<li>• ${p}</li>`);
-                            html += '</ul>';
+                            
+                            // 👇 التعديل الجذري لمنع انكسار الكلمات وتجاورها 👇
+                            html += '<div class="trip-points-list" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 35px 5px 0; color: #555;">';
+                            activity.trip.points.forEach(p => {
+                                let safePoint = p.replace(/ /g, '&nbsp;'); // تحويل المسافة لمسافة صلبة لا تنكسر
+                                html += `<span style="white-space: nowrap; display: inline-block; direction: rtl;">• ${safePoint}</span>`;
+                            });
+                            html += '</div>';
+                            // 👆 نهاية التعديل الجذري 👆
+
                             html += '</div>';
                         } else {
                             html += `<div class="activity-item">`;
