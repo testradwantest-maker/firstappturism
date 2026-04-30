@@ -1412,21 +1412,32 @@
 
             let sortedDays = Object.keys(activitiesByDay).map(Number).sort((a, b) => a - b);
 
-            // 👇 التعديل الجديد لجعل الرحلات تطابق الإقامات الفندقية تماماً 👇
+            // 👇 التعديل الجديد لجعل كل يوم منفصل وكل محطة في سطر 👇
             if (sortedDays.length > 0) {
                 html += '<div class="program-section">';
                 html += '<div class="section-title">🗓️ جدول الرحلات</div>';
                 
                 sortedDays.forEach(day => {
+                    // غلاف لكل يوم ليكون مفصولاً ومستقلاً
+                    html += `<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #e0e4e8;">`;
+                    
                     activitiesByDay[day].forEach(activity => {
                         if (activity.type === 'trip') {
-                            html += `<p><strong>اليوم ${day}: ${activity.name}</strong> - ${activity.trip.type}</p>`;
-                            let pointsStr = activity.trip.points.join(' • ');
-                            html += `<p style="font-size:14px; margin-bottom: 12px; color: #555;">المحطات: ${pointsStr}</p>`;
+                            html += `<p style="color: var(--primary); font-size: 16px; margin-bottom: 8px;"><strong>اليوم ${day}: ${activity.name}</strong> (${activity.trip.type})</p>`;
+                            
+                            // طباعة المحطات كل واحدة في سطر باستخدام div لضمان عملها بشكل مثالي في PDF
+                            html += `<div style="font-size:14px; color: #444; padding-right: 15px; border-right: 3px solid var(--secondary);">`;
+                            activity.trip.points.forEach(p => {
+                                html += `<div style="margin-bottom: 4px;">▪ ${p}</div>`;
+                            });
+                            html += `</div>`;
+                            
                         } else {
-                            html += `<p style="margin-bottom: 12px;"><strong>اليوم ${day}: ${activity.name}</strong> ${activity.icon}</p>`;
+                            html += `<p style="color: var(--primary); font-size: 16px; margin-bottom: 8px;"><strong>اليوم ${day}: ${activity.name}</strong> ${activity.icon}</p>`;
                         }
                     });
+                    
+                    html += `</div>`;
                 });
                 
                 html += '</div>';
